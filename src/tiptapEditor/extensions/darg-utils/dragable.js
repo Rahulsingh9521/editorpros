@@ -1,10 +1,5 @@
 import { Extension } from "@tiptap/core";
-import {
-  NodeSelection,
-  Plugin,
-  PluginKey,
-  TextSelection,
-} from "@tiptap/pm/state";
+import { NodeSelection, Plugin, PluginKey } from "@tiptap/pm/state";
 import { Fragment, Slice } from "@tiptap/pm/model";
 // import { EditorView } from "@tiptap/pm/view";
 import { serializeForClipboard } from "./clipboard-serializer";
@@ -42,43 +37,17 @@ function absoluteRect(node) {
   };
 }
 
-function nodeDOMAtCoords(coords, options) {
-  const selectors = [
-    "li",
-    "p:not(:first-child)",
-    "pre",
-    "blockquote",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    ...options.customNodes.map((node) => `[data-type=${node}]`),
-  ].join(", ");
-  return document
-    .elementsFromPoint(coords.x, coords.y)
-    .find(
-      (elem) =>
-        (elem.parentElement &&
-          typeof elem.parentElement.matches === "function" &&
-          elem.parentElement.matches(".ProseMirror")) ||
-        elem.matches(selectors)
-    );
-}
-function nodePosAtDOM(node, view, options) {
-  const boundingRect = node.getBoundingClientRect();
+function nodeDOMAtCoords(coords, view) {
+  let pos = view.posAtCoords({ left: coords.x - 50, top: coords.y });
+  if (pos) {
+    const resolvePos = view.state.doc.resolve(pos.pos);
 
-  return view.posAtCoords({
-    left: boundingRect.left + 50 + options.dragHandleWidth,
-    top: boundingRect.top + 1,
-  })?.inside;
-}
-
-function calcNodePos(pos, view) {
-  const $pos = view.state.doc.resolve(pos);
-  if ($pos.depth > 1) return $pos.before($pos.depth);
-  return pos;
+    if (resolvePos !== null) {
+      console.log(view.nodeDOM(resolvePos.pos));
+      return { node: view.nodeDOM(resolvePos.pos), pos: resolvePos.pos };
+    }
+  }
+  return null;
 }
 
 export function DragHandlePlugin(options) {
@@ -88,76 +57,20 @@ export function DragHandlePlugin(options) {
 
     if (!event.dataTransfer) return;
 
-    const node = nodeDOMAtCoords(
+    const nodeInfo = nodeDOMAtCoords(
       {
-        x: event.clientX + 50 + options.dragHandleWidth,
+        x: event.clientX + 50,
         y: event.clientY,
       },
-      options
+      view
     );
 
-    if (!(node instanceof Element)) return;
+    let node = nodeInfo.node;
+    let draggedNodePos = nodeInfo.pos;
 
-    let draggedNodePos = nodePosAtDOM(node, view, options);
-    if (draggedNodePos == null || draggedNodePos < 0) return;
-    draggedNodePos = calcNodePos(draggedNodePos, view);
-
-    const { from, to } = view.state.selection;
-    const diff = from - to;
-
-    const fromSelectionPos = calcNodePos(from, view);
-    let differentNodeSelected = false;
-
-    const nodePos = view.state.doc.resolve(fromSelectionPos);
-
-    // Check if nodePos points to the top level node
-    if (nodePos.node().type.name === "doc") differentNodeSelected = true;
-    else {
-      const nodeSelection = NodeSelection.create(
-        view.state.doc,
-        nodePos.before()
-      );
-
-      // Check if the node where the drag event started is part of the current selection
-      differentNodeSelected = !(
-        draggedNodePos + 1 >= nodeSelection.$from.pos &&
-        draggedNodePos <= nodeSelection.$to.pos
-      );
-    }
     let selection = view.state.selection;
-    if (
-      !differentNodeSelected &&
-      diff !== 0 &&
-      !(view.state.selection instanceof NodeSelection)
-    ) {
-      const endSelection = NodeSelection.create(view.state.doc, to - 1);
-      selection = TextSelection.create(
-        view.state.doc,
-        draggedNodePos,
-        endSelection.$to.pos
-      );
-    } else {
-      selection = NodeSelection.create(view.state.doc, draggedNodePos);
-
-      // if inline node is selected, e.g mention -> go to the parent node to select the whole node
-      // if table row is selected, go to the parent node to select the whole node
-      if (
-        selection.node.type.isInline ||
-        selection.node.type.name === "tableRow"
-      ) {
-        let $pos = view.state.doc.resolve(selection.from);
-        selection = NodeSelection.create(view.state.doc, $pos.before());
-      }
-    }
+    selection = NodeSelection.create(view.state.doc, draggedNodePos);
     view.dispatch(view.state.tr.setSelection(selection));
-
-    // If the selected node is a list item, we need to save the type of the wrapping list e.g. OL or UL
-    if (
-      view.state.selection instanceof NodeSelection &&
-      view.state.selection.node.type.name === "listItem"
-    ) {
-      listType = node.parentElement.tagName;
-    }
 
     const slice = view.state.selection.content();
     const { dom, text } = serializeForClipboard(view, slice);
@@ -277,24 +190,32 @@ export function DragHandlePlugin(options) {
             return;
           }
 
-          const node = nodeDOMAtCoords(
+          const nodeInfo = nodeDOMAtCoords(
             {
-              x: event.clientX + 50 + options.dragHandleWidth,
+              x: event.clientX + 50,
               y: event.clientY,
             },
-            options
+            view
           );
+          console.log("🚀 ~ DragHandlePlugin ~ nodeInfo:", nodeInfo);
 
-          const notDragging = node && node.closest(".not-draggable");
-          const excludedTagList = options.excludedTags
-            .concat(["ol", "ul"])
-            .join(", ");
+          if (!nodeInfo) {
+            return;
+          }
 
-          if (
-            !(node instanceof Element) ||
-            node.matches(excludedTagList) ||
-            notDragging
-          ) {
+          let node = nodeInfo.node;
+
+          if (node == "undefined" || node == null) {
+            hideDragHandle();
+            return;
+          }
+
+          // const notDragging = node && node.closest(".not-draggable");
+          // const excludedTagList = options.excludedTags
+          //   .concat(["ol", "ul"])
+          //   .join(", ");
+
+          if (!(node instanceof Element)) {
             hideDragHandle();
             return;
           }
@@ -318,7 +239,7 @@ export function DragHandlePlugin(options) {
 
           if (!dragHandleElement) return;
 
-          dragHandleElement.style.left = `${rect.left - rect.width}px`;
+          dragHandleElement.style.left = `${150}px`;
           dragHandleElement.style.top = `${rect.top}px`;
           showDragHandle();
         },
