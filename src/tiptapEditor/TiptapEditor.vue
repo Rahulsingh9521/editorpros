@@ -19,22 +19,15 @@
                 image
             </button>
         </bubble-menu>
-        <!-- <div  :style="plusButtonStyles" class="notion-plus-button">+</div> -->
-        <!-- <img style="width: 100%; height: 100%;" src="../assets/drag.png"/> -->
-        <!-- <div 
-          id="dragButton" 
-          :style="dragButtonStyle" 
-          @mousedown="handleDragMouseDown" 
-          @mouseup="handleDragMouseup" 
-          class="notion-drag-button" 
-        >|||</div>
-         -->
+
         <div 
             id="editor" 
             class="editor-wrapper" 
             @mousemove="handleMouseMove"  
             ></div>
-        
+
+        <fixedMenu :editor="editor"/>
+
         <div> {{ this.htmlContent }} </div>
         <div id="jsonObject"> </div>
         
@@ -45,11 +38,13 @@
 <script>
 import { Editor, BubbleMenu } from '@tiptap/vue-3';
 import Globalextensions from './extensions/index';
+import fixedMenu from './menu/fixedMenuLis.vue/fixedMenu.vue';
 
 
 export default {
     components: {
         BubbleMenu,
+        fixedMenu
     },
 
     data() {
