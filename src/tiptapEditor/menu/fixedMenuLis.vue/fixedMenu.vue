@@ -21,10 +21,10 @@ export default {
     data() {
         return {
             preset: {
-                imageSrc: "https://www.draw.io/images/logo.png",
+                src: "https://www.draw.io/images/logo.png",
                 width: 200,
                 height: 200,
-                alt: "drawio",
+                class: "drawio",
             }
         }
     },

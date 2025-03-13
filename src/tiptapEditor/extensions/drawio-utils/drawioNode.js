@@ -1,87 +1,62 @@
-import { Node } from "@tiptap/core";
+import { Node, mergeAttributes } from "@tiptap/core";
 
 export const DrawioNode = Node.create({
   name: "drawio",
 
   group: "block",
 
+  atom: true, // It's a single, non-editable element
+
   addAttributes() {
     return {
-      imageSrc: {
-        default: null,
-      },
-      alt: {
-        default: null,
-      },
-      iframeUrl: {
+      src: {
         default: null,
       },
       width: {
-        default: null,
+        default: "100%",
       },
       height: {
-        default: null,
+        default: "500px",
       },
+      class: {
+        default: "drawio-container", // Default CSS class
+      },
+      // You can add more attributes as needed
     };
   },
 
   parseHTML() {
     return [
       {
-        tag: "drawio",
+        tag: "div.drawio-container img",
+        getAttrs: (element) => ({
+          src: element.getAttribute("src"),
+          width: element.parentElement.style.width || "100%",
+          height: element.parentElement.style.height || "500px",
+        }),
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["div", HTMLAttributes];
-  },
-
-  addNodeView() {
-    return ({ node }) => {
-      const dom = document.createElement("div");
-      dom.classList.add("drawio");
-
-      const image = document.createElement("img");
-
-      if (node.attrs.imageSrc) {
-        image.src = node.attrs.imageSrc;
-      }
-
-      if (node.attrs.alt) {
-        image.alt = node.attrs.alt;
-      }
-
-      if (node.attrs.width) {
-        image.width = node.attrs.width;
-      }
-
-      if (node.attrs.height) {
-        image.height = node.attrs.height;
-      }
-
-      dom.appendChild(image);
-
-      return {
-        dom,
-      };
-    };
+    return [
+      "div",
+      mergeAttributes({
+        style: `width: ${HTMLAttributes.width}; height: ${HTMLAttributes.height};`,
+        class: HTMLAttributes.class,
+      }),
+      ["img", { src: HTMLAttributes.src }],
+    ];
   },
 
   addCommands() {
     return {
       insertDrawio:
-        (attributes) =>
+        (options) =>
         ({ commands }) => {
           return commands.insertContent({
-            type: "drawio",
-            attrs: {
-              imageSrc: attributes.imageSrc,
-              alt: attributes.alt,
-              iframeUrl: attributes.iframeUrl,
-              width: attributes.width,
-              height: attributes.height,
-            },
+            type: this.name,
+            attrs: options,
           });
         },
     };
