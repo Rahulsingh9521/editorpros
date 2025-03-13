@@ -38,13 +38,23 @@ function absoluteRect(node) {
 }
 
 function nodeDOMAtCoords(coords, view) {
-  let pos = view.posAtCoords({ left: coords.x - 50, top: coords.y });
-  if (pos) {
-    const resolvePos = view.state.doc.resolve(pos.pos);
+  let pos = view.posAtCoords({ left: coords.x, top: coords.y });
+  if (pos != null) {
+    let resolvedPos = view.state.doc.resolve(pos.pos);
+    let parentNode = resolvedPos.node(1);
+    let nodePos = null;
 
-    if (resolvePos !== null) {
-      console.log(view.nodeDOM(resolvePos.pos));
-      return { node: view.nodeDOM(resolvePos.pos), pos: resolvePos.pos };
+    view.state.doc.descendants((node, pos) => {
+      console.log("🚀 ~ view.state.doc.descendants ~ node:", node);
+      if (node === parentNode) {
+        nodePos = pos;
+
+        // return false;
+      }
+    });
+
+    if (nodePos != null) {
+      return { node: view.nodeDOM(resolvedPos), pos: nodePos };
     }
   }
   return null;
@@ -192,30 +202,26 @@ export function DragHandlePlugin(options) {
 
           const nodeInfo = nodeDOMAtCoords(
             {
-              x: event.clientX + 50,
+              x: event.clientX,
               y: event.clientY,
             },
             view
           );
           console.log("🚀 ~ DragHandlePlugin ~ nodeInfo:", nodeInfo);
 
-          if (!nodeInfo) {
+          if (nodeInfo == null) {
+            hideDragHandle();
             return;
           }
 
           let node = nodeInfo.node;
 
-          if (node == "undefined" || node == null) {
-            hideDragHandle();
-            return;
-          }
-
-          // const notDragging = node && node.closest(".not-draggable");
+          const notDragging = node && node.closest(".not-draggable");
           // const excludedTagList = options.excludedTags
           //   .concat(["ol", "ul"])
           //   .join(", ");
 
-          if (!(node instanceof Element)) {
+          if (!(node instanceof Element) || notDragging) {
             hideDragHandle();
             return;
           }
@@ -239,7 +245,7 @@ export function DragHandlePlugin(options) {
 
           if (!dragHandleElement) return;
 
-          dragHandleElement.style.left = `${150}px`;
+          dragHandleElement.style.left = `${rect.left - 50}px`;
           dragHandleElement.style.top = `${rect.top}px`;
           showDragHandle();
         },
