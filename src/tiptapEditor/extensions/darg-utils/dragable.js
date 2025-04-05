@@ -38,26 +38,165 @@ function absoluteRect(node) {
 }
 
 function nodeDOMAtCoords(coords, view) {
-  let pos = view.posAtCoords({ left: coords.x, top: coords.y });
-  if (pos != null) {
-    let resolvedPos = view.state.doc.resolve(pos.pos);
-    let parentNode = resolvedPos.node(1);
-    let nodePos = null;
+  let posData = view.posAtCoords({ left: coords.x, top: coords.y });
+  if (!posData) return null;
 
-    view.state.doc.descendants((node, pos) => {
-      console.log("🚀 ~ view.state.doc.descendants ~ node:", node);
-      if (node === parentNode) {
-        nodePos = pos;
+  let resolvedPos = view.state.doc.resolve(posData.pos);
+  let depthZeroNode = resolvedPos.node(0); // Root document node
 
-        // return false;
-      }
-    });
+  // Traverse up to find the top-level block node
+  for (let depth = resolvedPos.depth; depth > 0; depth--) {
+    // let currentNode = resolvedPos.node(depth);
+    let parentNode = resolvedPos.node(depth - 1);
 
-    if (nodePos != null) {
-      return { node: view.nodeDOM(resolvedPos), pos: nodePos };
+    // If the parent is the root (depth 0), the current node is our target
+    if (parentNode === depthZeroNode) {
+      let nodePos = resolvedPos.before(depth); // Position of the depth 0 node
+      let nodeDOM = view.nodeDOM(nodePos);
+
+      return {
+        node: nodeDOM instanceof HTMLElement ? nodeDOM : null,
+        pos: nodePos,
+      };
     }
   }
-  return null;
+
+  // If already at depth 0, return its DOM and position
+  return {
+    node: view.nodeDOM(posData.pos),
+    pos: posData.pos,
+  };
+
+  // ======================
+
+  // Get the exact DOM element under the cursor
+  // let domElement = document.elementFromPoint(coords.x, coords.y);
+  // if (!domElement) return null; // Exit early if nothing is found
+
+  // // Ensure the element is inside the editor
+  // if (!view.dom.contains(domElement)) return null;
+
+  // // Get the nearest position in the ProseMirror document
+  // let posData = view.posAtCoords({ left: coords.x, top: coords.y });
+  // if (!posData) return null;
+
+  // let resolvedPos = view.state.doc.resolve(posData.pos);
+  // let exactNode = null;
+  // let nodePos = null;
+
+  // // Allowed node types
+  // const allowedNodes = new Set([
+  //   "listItem", "bulletList", "orderedList",
+  //   "codeBlock", "drawio", "heading",
+  //   "paragraph", "table", "tableRow",
+  //   "tableCell", "image"
+  // ]);
+
+  // // Traverse to find the exact node under the cursor
+  // view.state.doc.descendants((node, pos) => {
+  //   let domNode = view.nodeDOM(pos);
+
+  //   if (allowedNodes.has(node.type.name) && domNode === domElement) {
+  //     exactNode = node;
+  //     nodePos = pos;
+  //     return false; // Stop traversal once exact match is found
+  //   }
+  // });
+
+  // if (exactNode && nodePos !== null) {
+  //   return { node: exactNode, domNode: domElement, pos: nodePos };
+  // }
+
+  // return null;
+
+  // ======================
+
+  // let pos = view.posAtCoords({ left: coords.x, top: coords.y });
+  // if (pos != null) {
+  //   let resolvedPos = view.state.doc.resolve(pos.pos);
+  //   let parentNode = resolvedPos.node(1);
+  //   // let currentNode = resolvedPos.node(0);
+
+  //   // console.log(
+  //   //   "🚀 ~ view.state.doc.descendants ~ node:",
+  //   //   resolvedPos,
+  //   //   parentNode,
+  //   //   currentNode
+  //   // );
+  //   let nodePos = null;
+
+  //   console.log("----");
+  //   view.state.doc.descendants((node, pos) => {
+  //     const nodeStart = pos;
+  //     const nodeEnd = pos + node.nodeSize;
+  //     const rsPos = view.state.doc.resolve(pos);
+  //     const depth = rsPos.depth;
+
+  //     console.log(
+  //       `Node Type: ${node.type.name}`,
+  //       "Element:",
+  //       view.nodeDOM(pos),
+  //       `Range: ${nodeStart} - ${nodeEnd}`,
+  //       `Depth: ${depth}`
+  //     );
+  //   });
+  //   console.log("----");
+
+  //   view.state.doc.descendants((node, pos) => {
+  //     // console.log("🚀 ~ view.state.doc.descendants ~ node:", node);
+  //     if (node === parentNode) {
+  //       nodePos = pos;
+
+  //       return false;
+  //     }
+  //   });
+
+  //   if (nodePos != null) {
+  //     return { node: view.nodeDOM(nodePos), pos: nodePos };
+  //   }
+  // }
+  // return null;
+
+  // ======================
+
+  // Get the exact DOM element under the cursor
+  // let domElement = document.elementFromPoint(coords.x, coords.y);
+  // if (!domElement) return null; // If nothing is found, exit early
+
+  // // Ensure the element is inside the editor
+  // if (!view.dom.contains(domElement)) return null;
+
+  // // Get the nearest position in the ProseMirror document
+  // let posData = view.posAtCoords({ left: coords.x, top: coords.y });
+  // if (!posData) return null;
+
+  // let resolvedPos = view.state.doc.resolve(posData.pos);
+  // let nodeAtCursor = resolvedPos.nodeAfter || resolvedPos.parent; // Get closest node
+
+  // // Ensure it's one of the required node types
+  // if (
+  //   nodeAtCursor &&
+  //   [
+  //     "listItem", // List items (li)
+  //     "bulletList",
+  //     "orderedList",
+  //     "codeBlock", // Code block
+  //     "drawio", // Custom nodes (if any)
+  //     "heading", // Headings
+  //     "paragraph", // Paragraphs
+  //     "table", // Tables
+  //     "tableRow",
+  //     "tableCell",
+  //     "image", // Images
+  //   ].includes(nodeAtCursor.type.name)
+  // ) {
+  //   return {
+  //     node: domElement,
+  //     pos: posData.pos,
+  //   };
+  // }
+
+  // return null;
 }
 
 export function DragHandlePlugin(options) {
@@ -207,7 +346,7 @@ export function DragHandlePlugin(options) {
             },
             view
           );
-          console.log("🚀 ~ DragHandlePlugin ~ nodeInfo:", nodeInfo);
+          // console.log("🚀 ~ DragHandlePlugin ~ nodeInfo:", nodeInfo);
 
           if (nodeInfo == null) {
             hideDragHandle();
@@ -245,7 +384,7 @@ export function DragHandlePlugin(options) {
 
           if (!dragHandleElement) return;
 
-          dragHandleElement.style.left = `${rect.left - 50}px`;
+          dragHandleElement.style.left = `${rect.left}px`;
           dragHandleElement.style.top = `${rect.top}px`;
           showDragHandle();
         },
