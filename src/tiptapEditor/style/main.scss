@@ -8,11 +8,11 @@
   }
 .editor-wrapper{
     border: 1px solid black;
-    width: 700px;
+    padding: 14px;
+    width: 1000px;
     border-radius: 0.5px;
     margin: 1px 0px;
-    min-height: 300px;
-    max-height: 500px;
+    height: 500px;
     overflow-y: auto;
 }
 /* Basic editor styles */
@@ -154,6 +154,12 @@
     cursor: ew-resize;
     cursor: col-resize;
   }
+
+  div {
+    &.ProseMirror-selectednode {
+      outline: 2px solid gray;      
+    }
+  }
 }
 
 .bubble-menu {
@@ -267,14 +273,14 @@
   }
 }
 
-.drag-handle {
-    position: fixed;
-    opacity: 1;
-    transition: opacity ease -in 0.2s;
-    border-radius: 0.25rem;
-    left: 5px;
+// .drag-handle {
+//     position: fixed;
+//     opacity: 1;
+//     transition: opacity ease -in 0.2s;
+//     border-radius: 0.25rem;
+//     left: 5px;
 
-    background-color: #000;
+//     background-color: #000;
 
 
-}
+// }

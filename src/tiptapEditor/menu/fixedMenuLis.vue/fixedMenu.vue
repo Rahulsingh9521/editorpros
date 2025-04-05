@@ -1,8 +1,8 @@
 <template>
     <div class="bubble-menu" v-if="editor">
-            <button @click="editor.commands.insertDrawio(this.preset)" :class="{ 'is-active': this.editor.isActive('bold') }">Bold</button>
-            <!-- <button @click="editor.commands.toggleItalic()" :class="{ 'is-active': this.editor.isActive('italic') }">Italic</button>
-            <button @click="editor.commands.toggleStrike()" :class="{ 'is-active': this.editor.isActive('strike') }">Strike</button> -->
+            <button @click="handleDrawioInset()" :class="{ 'is-active': this.editor.isActive('bold') }">Bold</button>
+            <button @click="wirte()" >Italic</button>
+            <!-- <button @click="editor.commands.toggleStrike()" :class="{ 'is-active': this.editor.isActive('strike') }">Strike</button> -->
     </div>
 </template>
 
@@ -21,13 +21,49 @@ export default {
     data() {
         return {
             preset: {
-                src: "https://www.draw.io/images/logo.png",
-                width: 200,
-                height: 200,
-                class: "drawio",
+                // url: "https://www.draw.io/images/logo.png",
+                url: "",
+                isCreated: true,
             }
         }
     },
+    methods: {
+        handleDrawioInset() {
+            // this.editor.chain().focus().run();
+
+            // const { from } = this.editor.state.selection;
+
+
+            // this.editor.chain().focus()
+            //     .createParagraphNear()
+            //     .insertContent({
+            //         type: 'drawio',
+            //         attrs: {
+            //             url: "https://www.draw.io/images/logo.png",
+            //             isCreated: true,
+            //         },
+            //         content: ''
+            //     })
+            //     .createParagraphNear()
+            //     .run();
+            this.editor.chain().focus().insertDrawio(this.preset).run();
+            // this.editor.commands.insertContent({
+            //     type: 'paragraph',
+            //     content: [
+            //     {
+            //         type: 'text',
+            //         text: '',
+            //     },
+            //     ],
+            // },); 
+        },
+        wirte() {
+            let some = this.editor.getHTML();
+            let some2 = this.editor.getJSON();
+
+            console.log("🚀 ~ wirte ~ some:", some, some2)
+        }
+    }
 }
 </script>
 

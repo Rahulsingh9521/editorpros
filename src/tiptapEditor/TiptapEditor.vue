@@ -19,22 +19,26 @@
             </button>
         </bubble-menu>
 
-        <div 
+        <!-- <div 
             id="editor" 
             class="editor-wrapper" 
             @mousemove="handleMouseMove"  
-            ></div>
+            ></div> -->
+          
+            <editor-content 
+              :editor="editor" 
+              class="editor-wrapper" 
+            />
 
         <fixedMenu :editor="editor"/>
 
         <div> {{ this.htmlContent }} </div>
         <div id="jsonObject"> </div>
         
-        <!-- <editor-content :editor="editor" /> -->
-</template>
+      </template>
 
 <script>
-import { Editor, BubbleMenu } from '@tiptap/vue-3';
+import { Editor, BubbleMenu, EditorContent } from '@tiptap/vue-3';
 import Globalextensions from './extensions/index';
 import fixedMenu from './menu/fixedMenuLis.vue/fixedMenu.vue';
 
@@ -42,7 +46,8 @@ import fixedMenu from './menu/fixedMenuLis.vue/fixedMenu.vue';
 export default {
     components: {
         BubbleMenu,
-        fixedMenu
+        fixedMenu,
+        EditorContent
     },
 
     data() {
@@ -101,8 +106,8 @@ export default {
 
         this.editor = new Editor({
             
-            element: document.getElementById('editor'),
-            content: '',
+            // element: document.getElementById('editor'),
+            content: ``,
             extensions: [
               ...Globalextensions
             ],

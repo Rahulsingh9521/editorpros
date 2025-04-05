@@ -1,64 +1,66 @@
-import { Node, mergeAttributes } from "@tiptap/core";
+import { Node } from "@tiptap/core";
+import { VueNodeViewRenderer } from "@tiptap/vue-3";
+import drawioComponent from "./drawioComponent.vue";
 
-export const DrawioNode = Node.create({
+const DrawioNode = Node.create({
   name: "drawio",
 
   group: "block",
-
-  atom: true, // It's a single, non-editable element
+  //   content: "block*", // Allow block elements (like iframe, img)
+  atom: true,
+  selectable: true,
+  draggable: true,
+  allowGapCursor: true,
 
   addAttributes() {
     return {
-      src: {
-        default: null,
+      url: {
+        default: "",
       },
-      width: {
-        default: "100%",
-      },
-      height: {
-        default: "500px",
+      isCreated: {
+        default: false, // Initially, the diagram is not created
       },
       class: {
-        default: "drawio-container", // Default CSS class
+        default: "drawio-wrapper",
       },
-      // You can add more attributes as needed
     };
   },
 
   parseHTML() {
     return [
       {
-        tag: "div.drawio-container img",
-        getAttrs: (element) => ({
-          src: element.getAttribute("src"),
-          width: element.parentElement.style.width || "100%",
-          height: element.parentElement.style.height || "500px",
-        }),
+        tag: "div[data-drawio]",
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return [
-      "div",
-      mergeAttributes({
-        style: `width: ${HTMLAttributes.width}; height: ${HTMLAttributes.height};`,
-        class: HTMLAttributes.class,
-      }),
-      ["img", { src: HTMLAttributes.src }],
-    ];
+    return ["div", HTMLAttributes.class];
+  },
+
+  addNodeView() {
+    return VueNodeViewRenderer(drawioComponent);
   },
 
   addCommands() {
     return {
       insertDrawio:
         (options) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: options,
-          });
+        ({ commands, editor }) => {
+          const { from } = editor.state.selection;
+          return commands.insertContentAt(from, [
+            {
+              type: this.name,
+              attrs: {
+                url: options.url,
+                isCreated: true,
+              },
+            },
+            { type: "paragraph", content: "" },
+          ]);
         },
     };
   },
 });
+
+export default DrawioNode;
