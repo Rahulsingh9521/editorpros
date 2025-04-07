@@ -6,7 +6,6 @@ const DrawioNode = Node.create({
   name: "drawio",
 
   group: "block",
-  //   content: "block*", // Allow block elements (like iframe, img)
   atom: true,
   selectable: true,
   draggable: true,
@@ -18,9 +17,9 @@ const DrawioNode = Node.create({
         default: "",
       },
       isCreated: {
-        default: false, // Initially, the diagram is not created
+        default: false,
       },
-      class: {
+      calss: {
         default: "drawio-wrapper",
       },
     };
@@ -44,21 +43,21 @@ const DrawioNode = Node.create({
 
   addCommands() {
     return {
-      insertDrawio:
-        (options) =>
+      insertDraiwo: (options) => {
         ({ commands, editor }) => {
-          const { from } = editor.state.selection;
-          return commands.insertContentAt(from, [
+          const { form } = editor.state.selection;
+          return commands.insertConstAt(form, [
             {
               type: this.name,
               attrs: {
                 url: options.url,
-                isCreated: true,
+                isCreated: false,
               },
             },
             { type: "paragraph", content: "" },
           ]);
-        },
+        };
+      },
     };
   },
 });

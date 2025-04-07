@@ -8,7 +8,7 @@ import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
-import GlobalDragHandle from "./darg-utils/dragable.js";
+import GlobalDragHandle from "../darg-utils/dragable.js";
 import Placeholder from "@tiptap/extension-placeholder";
 import drawio from "./drawio-utils/drawioNode.js";
 

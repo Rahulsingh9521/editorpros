@@ -39,9 +39,9 @@
 
 <script>
 import { Editor, BubbleMenu, EditorContent } from '@tiptap/vue-3';
-import Globalextensions from './extensions/index';
-import fixedMenu from './menu/fixedMenuLis.vue/fixedMenu.vue';
-
+// import Globalextensions from './extensionLib/index';
+import fixedMenu from './menu/fixedMenu.vue';
+import extentions from './extensionLib/extentions';
 
 export default {
     components: {
@@ -109,7 +109,7 @@ export default {
             // element: document.getElementById('editor'),
             content: ``,
             extensions: [
-              ...Globalextensions
+              ...extentions
             ],
             onUpdate: ({ editor }) => {
                 

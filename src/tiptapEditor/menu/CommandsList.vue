@@ -1,124 +1,116 @@
 <template>
     <div class="dropdown-menu" v-if="items.length">
         <button
-          :class="{ 'is-selected': index == selectedIndex }"
-          v-for="(item, index) in items"
-          :key="index"
-          @click="selectItem(index)"
+            :class="{ 'is-selected': index == selectedIndex }"
+            v-for="(item,index) in items"
+            :key="index"
+            @click="Selection(index)"
         >
-          {{ item.title }}
+            {{ item.title }}
         </button>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      items: {
-        type: Array,
-        required: true,
-      },
-  
-      command: {
-        type: Function,
-        required: true,
-      },
-    },
-  
-    data() {
-      return {
-        selectedIndex: 0,
-      }
-    },
-  
-    watch: {
-      items() {
-        // console.log(this.items.length, this.items);
-        this.selectedIndex = 0
-      },
-    },
-    mounted() {
-        // console.log(this.props, this.command);
-    },
-  
-    methods: {
-      onKeyDown({ event }) {
-        if (event.key === 'ArrowUp') {
-          this.upHandler()
-          return true
-        }
-  
-        if (event.key === 'ArrowDown') {
-          this.downHandler()
-          return true
-        }
-  
-        if (event.key === 'Enter') {
-          this.enterHandler()
-          return true
-        }
-  
-        return false
-      },
-  
-      upHandler() {
-        this.selectedIndex = ((this.selectedIndex + this.items.length) - 1) % this.items.length
-      },
-  
-      downHandler() {
-        this.selectedIndex = (this.selectedIndex + 1) % this.items.length;
-      },
+</template>
 
-      enterHandler() {
-        if(this.selectedIndex === 0 && this.items.length === 0) {
-            console.log('No items to select');
-        }
-        else{
-            this.selectItem(this.selectedIndex)
-        }
-      },
-  
-      selectItem(index) {
-        const item = this.items[index]
-  
-        if (item) {
-          this.command(item)
-        }
-      },
+<script>
+export default {
+    props: {
+        items: {
+            type: Array,
+            required: true,
+        },
+        command: {
+            type: Function,
+            require: true,
+        },
     },
-  }
-  </script>
-  
-  <style lang="scss">
-  /* Dropdown menu */
-  .dropdown-menu {
-    background: yellow;
-    border: 1px solid black;
-    border-radius: 0.7rem;
-    box-shadow: brown;
+    data() {
+        return {
+            selectedIndex: 0,
+        };
+    },  
+    watch: {
+        items() {
+            this.selectedIndex = 0;
+        }
+    },
+    methods: {
+        onkeydown({event}) {
+            if(event.key === 'ArrowUp') {
+                this.upHandler();
+                return true;
+            } else if(event.key === 'ArrowDown') {
+                this.downHandler();
+                return true;
+            } else if(event.key === 'Enter') {
+                this.enterHandler();
+                return true;
+            }
+
+            return false;
+        },
+        upHandler() {
+            this.selectedIndex = (this.selectedIndex - 1 + this.items.length) % this.items.length;
+        },
+        downHandler() {
+            this.selectedIndex = (this.selectedIndex + 1) % this.items.length;
+        },
+        enterHandler() {
+            if(this.selectedIndex === 0 && this.items.length === 0) {
+                console.log('No items available');
+            }
+            else{
+                this.selecteItem(this.selectedIndex);
+            }
+        },
+
+        selecteItem(index) {
+            const item = this.items[index];
+            if (item) {
+                this.command(item);
+            }
+        },
+    },
+};
+</script>
+
+<style scoped>
+.bubble-menu {
+    background: #fff;
+    border: 1px solid gray;
+    width: 150px;
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
     overflow: auto;
-    padding: 0.4rem;
     position: relative;
-  
-    button {
-      align-items: center;
-      background-color: transparent;
-      display: flex;
-      gap: 0.25rem;
-      text-align: left;
-      width: 100%;
-  
-      &:hover,
-      &:hover.is-selected {
-        background-color: green($color: #3ebc42);
-      }
-  
-      &.is-selected {
-        background-color: blue($color: #2567e3);
-      }
+    padding: 0.5rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    box-shadow: 1px 2px 2px #000;
+
+    button{
+        border: none;
+        background: #fff;
+        align-items: center;
+        display: flex;
+        text-align: left;
+        width: 100%;
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 5px;
+
+        &.is-selected{
+            background-color: #f5f5f5;
+            color: #000;
+        }
+        &:hover{
+            background-color: #f5f5f5;
+            color: #000;
+        }
     }
-  }
-  </style>
+}
+
+.tippy-content{
+    padding: 8px 8px 8px 2px;
+}
+
+</style>
