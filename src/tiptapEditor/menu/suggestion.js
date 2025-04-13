@@ -5,7 +5,6 @@ import CommandsList from "./CommandsList.vue";
 
 export default {
   items: ({ query }) => {
-    // console.log("🚀 ~ file: suggestion.js ~ line 6 ~ items: ~ query");
     const user = [
       {
         title: "Heading 1",
@@ -42,20 +41,28 @@ export default {
         },
       },
       {
-        title: "code",
-        command: ({ editor, range }) => {
-          editor.chain().focus().deleteRange(range).setCodeBlock().run();
-        },
-      },
-      {
         title: "table",
         command: ({ editor, range }) => {
           editor
             .chain()
             .focus()
             .deleteRange(range)
-            .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+            .insertTable({ row: 3, col: 3, withHeaderRow: true })
             .run();
+        },
+      },
+      {
+        tile: "image",
+        command: ({ editor, range }) => {
+          const url = "https://avatars.githubusercontent.com/u/46894481?v=4";
+          if (url) {
+            editor
+              .chain()
+              .focus()
+              .deleteRange(range)
+              .setImage({ src: url })
+              .run();
+          }
         },
       },
     ];
@@ -66,9 +73,7 @@ export default {
       )
       .slice(0, 10);
 
-    // console.log("🚀 ~ selectedUser:", selectedUser);
-
-    if (selectedUser.length === 0) {
+    if (selectedUser.length == 0) {
       return [];
     } else {
       return selectedUser;
@@ -81,22 +86,16 @@ export default {
 
     return {
       onStart: (props) => {
-        // console.log("props", props);
         component = new VueRenderer(CommandsList, {
-          // using vue 2:
-          // parent: this,
-          // propsData: props,
           props,
           editor: props.editor,
         });
-
-        console.log("component", component);
 
         if (!props.clientRect) {
           return;
         }
 
-        // console.log("🚀 ~ component:", props.editor);
+        console.log("clientRect");
 
         popup = tippy("body", {
           getReferenceClientRect: props.clientRect,
@@ -105,14 +104,12 @@ export default {
           showOnCreate: true,
           interactive: true,
           trigger: "manual",
-          placement: "top-start",
+          theme: "custom-theme",
+          placement: "right",
         });
       },
-
       onUpdate(props) {
-        // console.log("🚀 ~ component:");
         component.updateProps(props);
-        console.log("🚀 ~ onUpdate ~ props:", props);
 
         if (!props.clientRect) {
           return;
@@ -122,23 +119,19 @@ export default {
           getReferenceClientRect: props.clientRect,
         });
       },
-
       onKeyDown(props) {
-        // console.log("🚀 ~ component:");
         if (props.event.key === "Escape") {
           popup[0].hide();
-
           return true;
         }
-
         return component.ref?.onKeyDown(props);
       },
-
       onExit() {
-        console.log("🚀 ~ onexit:");
         popup[0].destroy();
         component.destroy();
       },
     };
   },
+
+  // Add your custom suggestion logic here
 };

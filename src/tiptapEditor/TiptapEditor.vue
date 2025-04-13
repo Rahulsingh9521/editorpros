@@ -1,60 +1,64 @@
 <template>
-        <bubble-menu
-            class="bubble-menu"
-            :tippy-options="{ duration: 100 }"
-            :editor="editor"
-            v-if="this.editor"
-            >
-            <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': this.editor.isActive('bold') }">
-                Bold
-            </button>
-            <button @click="editor.chain().focus().toggleItalic().run()" :class="{ 'is-active': this.editor.isActive('italic') }">
-                Italic
-            </button>
-            <button @click="editor.chain().focus().toggleStrike().run()" :class="{ 'is-active': this.editor.isActive('strike') }">
-                Strike
-            </button>
-            <button @click="handleimageUpload" :class="{ 'is-active': this.editor.isActive('image') }">
-                image
-            </button>
-        </bubble-menu>
+    <div class="main-wrapper">
 
-        <!-- <div 
-            id="editor" 
-            class="editor-wrapper" 
-            @mousemove="handleMouseMove"  
-            ></div> -->
-          
-            <editor-content 
-              :editor="editor" 
-              class="editor-wrapper" 
-            />
+        <div class="topSection">
+            <fixedMenu :editor="editor" />
+            <editor-content
+                id="editor"
+                :editor="editor"
+                class="editor-wrapper ProseMirror"
+                @dbleclick="this.adjustCursor()"
+            ></editor-content>
+        </div>
 
-        <fixedMenu :editor="editor"/>
+        <div class="bottomSection">
+            <div id="htmlObject">
+                <h6><u>HTML</u></h6>
+                <h6>{{ this.htmlContent }}</h6>
+            </div>
+            <div id="jsonObject">
+                <h6><u>JSON</u></h6>
+                <h6>{{ this.jsonContent }}</h6>
+            </div>
+        </div>
 
-        <div> {{ this.htmlContent }} </div>
-        <div id="jsonObject"> </div>
+        <bubbleMenu :editor="editor" />
+        <linkBubbleMenu :editor="editor" />
+        <tableEditMenu :editor="editor" />
+
+    </div>        
         
-      </template>
+</template>
 
 <script>
-import { Editor, BubbleMenu, EditorContent } from '@tiptap/vue-3';
-import Globalextensions from './extensions/index';
-import fixedMenu from './menu/fixedMenuLis.vue/fixedMenu.vue';
+import { Editor, EditorContent } from '@tiptap/vue-3';
+// import Globalextensions from './extensionLib/index';
+import fixedMenu from './menu/fixedMenu.vue';
+import globlaExtensions from './extensionLib/extentions';
+// import StarterKit from "@tiptap/starter-kit";
+import slashCommand from './menu/slashCommands';
+import suggestion from './menu/suggestion';
 
+// import extentions from './extensionLib/extentions';
+import linkBubbleMenu from './menu/linkBubbleMenu.vue';
+import tableEditMenu from './menu/tableEditMenu.vue';
+import bubbleMenu from './menu/bubbleMenu.vue';
+import GlobalDragHandle from "../tiptapEditor/darg-utils/dragable.js";
 
 export default {
     components: {
-        BubbleMenu,
+        bubbleMenu,
         fixedMenu,
-        EditorContent
+        EditorContent,
+        linkBubbleMenu,
+        tableEditMenu
     },
 
     data() {
         return {
             editor: null,
             htmlContent: '',
-            jsonContent: '',
+            jsonContent: {},
 
             plusButtonPosition: null,
             showPlusButton: false,
@@ -62,6 +66,8 @@ export default {
             showdragButton: false,
             dragButtonPosition: null,
             MouseDown: false,
+
+            isSelectectionActive: false,
         }
     },
 
@@ -100,36 +106,50 @@ export default {
             }
         },
     },
-
+    
     mounted() {
         // const dropExtensionInstance = new Drop();
 
         this.editor = new Editor({
             
             // element: document.getElementById('editor'),
-            content: ``,
+            content: '',
             extensions: [
-              ...Globalextensions
+                ...globlaExtensions,
+              slashCommand.configure({
+                suggestion
+              }),
+              GlobalDragHandle
             ],
+            editable: true,
             onUpdate: ({ editor }) => {
                 
                 this.htmlContent = editor.getHTML();
-                const text = new DOMParser().parseFromString(this.htmlContent, 'text/html').body.textContent;
+                const beautify = require('js-beautify').html;
+                this.htmlContent = beautify(this.htmlContent, {indent_size: 2});
 
-                this.htmlContent = text;
+
                 // const some = JSON.parse(editor.getJSON());
                 this.jsonContent = JSON.stringify(editor.getJSON(), null, 2);
-                const jsonObject = document.getElementById('jsonObject');
-                jsonObject.innerHTML = this.jsonContent;
+                // const jsonObject = document.getElementById('jsonObject');
+                // jsonObject.innerHTML = this.jsonContent;
             },
 
         })
+        // console.log(globlaExtensions)
     },
 
     beforeUnmount() {
         this.editor.destroy()
     },
     methods: {
+    adjustCursor(){
+        if(!this.editor.state.selection.empty && this.isSelectectionActive){
+            this.editor.commands.setTextSelection(this.editor.state.selection.to);
+            this.isSelectectionActive = false;
+        }
+        this.editor.chain().focs().run();
+    },
       handleDragMouseup(){
         console.log('Mouse up');
         this.MouseDown = false;
