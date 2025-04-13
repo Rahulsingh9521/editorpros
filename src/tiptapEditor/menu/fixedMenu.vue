@@ -36,7 +36,8 @@
 </template>
 
 <script>
-import textFormatting from '';
+import textFormatting from '../../components/textFormatting.vue';
+
 export default {
     name: 'FixedMenu',
     components: {
@@ -68,7 +69,7 @@ export default {
             }
 
             this.editor.chain().focus().run();
-            this.$store.commit('toggleShownLinkMenu', true);
+            this.$store.commit('toggleShowLinkMenu', true);
         },
         insetNewLine() {
             const { selection } = this.editor.view.state;

@@ -7,7 +7,7 @@
             theme: 'custom-theam',
             interactive: true, 
             arrow: true,
-            hideclick: true,    
+            hideOnClick: true,    
         }"
         v-if="editor"
         :should-show="( {editor}) => {
@@ -41,7 +41,7 @@
             <button @click="this.editor.chain().focus().deleteColumn().run()" ><i class="bi bi-trash-fill"></i></button>
             <button @click="this.editor.chain().focus().deleteRow().run()" ><i class="bi bi-trash-fill"></i></button>
             <button @click="this.editor.chain().focus().deleteTable().run()" ><i class="bi bi-trash-fill"></i></button>
-            <button @click="this.editor.chain().focus().mergeCells().run()" ><span>Merge Cell</span></i></button>
+            <button @click="this.editor.chain().focus().mergeCells().run()" ><span>Merge Cell</span></button>
             <button @click="this.editor.chain().focus().splitCell().run()" ><span>Split Cell</span></button>
 
     </div>
@@ -52,7 +52,6 @@
 <script>
 
 import { BubbleMenu } from '@tiptap/vue-3';
-import { formatUtils } from '../text-utils/textFormat';
 
 export default {
     components: {
@@ -67,7 +66,6 @@ export default {
     },
 
     methods: {
-        handleMergeTable
     },
 
 }

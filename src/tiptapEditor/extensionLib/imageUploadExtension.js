@@ -1,7 +1,7 @@
-import { Plugin } from "prosemirror-state";
-import { Decoration, DecorationSet } from "prosemirror-view";
+import { Plugin } from "@tiptap/pm/state";
+import { Decoration, DecorationSet } from "@tiptap/pm/view";
 import Image from "@tiptap/extension-image";
-import "../style/imageUpload.scss";
+import "../../main-css/imageUpload.scss";
 
 let uploadFn;
 let imagePrview = "";

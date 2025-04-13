@@ -1,21 +1,19 @@
 <template>
   <!-- <prose-mirror-editor /> -->
-   <tiptapEditor/>
+   <!-- <tiptapEditor/> -->
+   <homePage/>
    <!-- <editorJs/> -->
 </template>
 
 <script>
 // import ProseMirrorEditor from './components/ProsMirrorEditor.vue'
-import tiptapEditor from './tiptapEditor/TiptapEditor.vue';
-// import editorJs from './editorjs/editor.vue'
-
+// import tiptapEditor from './tiptapEditor/TiptapEditor.vue';
+import homePage from './application/homePage.vue';
 
 export default {
   name: 'App',
   components: {
-    // ProseMirrorEditor,
-    tiptapEditor,
-    // editorJs
+    homePage,
   }
 }
 </script>
@@ -23,11 +21,12 @@ export default {
 <style>
 
 #app {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  font-size: 14px;
 }
 
 </style>

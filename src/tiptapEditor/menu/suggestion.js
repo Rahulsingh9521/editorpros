@@ -67,9 +67,11 @@ export default {
       },
     ];
 
-    const selectedUser = user.filter((item) =>
-      item.title.toLowerCase().startsWith(query.toLowerCase()).slice(0, 10)
-    );
+    const selectedUser = user
+      .filter((item) =>
+        item.title.toLowerCase().startsWith(query.toLowerCase())
+      )
+      .slice(0, 10);
 
     if (selectedUser.length == 0) {
       return [];
@@ -92,6 +94,8 @@ export default {
         if (!props.clientRect) {
           return;
         }
+
+        console.log("clientRect");
 
         popup = tippy("body", {
           getReferenceClientRect: props.clientRect,

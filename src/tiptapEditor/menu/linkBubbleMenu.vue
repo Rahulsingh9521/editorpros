@@ -7,14 +7,14 @@
             theme: 'custom-theam',
             interactive: true,
             arrow: true,
-            hideOnclick: true,    
+            hideOnClick: true,    
         }"
         v-if="editor"
         :should-show="( {editor}) => {
             const { selection } = editor.view.state;
 
             if(selection.empty) {
-                this.$store.commit('toggleShownLinkMenu', false);
+                this.$store.commit('toggleShowLinkMenu', false);
                 return false;
             }
 
@@ -95,7 +95,7 @@ export default {
     methods: {
         confirmeLink() {
             this.editor.commands.setLink({ href: this.linkUrl, target: '_blank' });
-            this.$store.commit('toggleShownLinkMenu', false);
+            this.$store.commit('toggleShowLinkMenu', false);
             this.isActiveLinkEdit = false;
         },
         updateURL(event) {

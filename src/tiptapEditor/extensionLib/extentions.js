@@ -3,18 +3,18 @@ import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
 
 // import Document from "@tiptap/extension-document";
-import slashCommand from "../menu/slashCommand.js";
-import suggestion from "../menu/suggestion.js";
+// import slashCommand from "../menu/slashCommands.js";
+// import suggestion from "../menu/suggestion.js";
 
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
-import GlobalDragHandle from "../darg-utils/dragable.js";
+// import GlobalDragHandle from "../darg-utils/dragable.js";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextStyle from "@tiptap/extension-text-style";
 import FontFamily from "@tiptap/extension-font-family";
-import { CodeBlockPrism } from "./codeBlock/tiptap-extension-code-block-prism.js";
+import { CodeBlockPrism } from "tiptap-extension-code-block-prism";
 import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
@@ -47,7 +47,7 @@ export default [
     defaultLanguage: "jsx",
   }),
   TextAlign.configure({
-    types: ["heading", "paragraph", "uploadImage", "image", "table"],
+    types: ["heading", "paragraph", "image", "table"],
     alignments: ["left", "center", "right"],
   }),
   Subscript,
@@ -72,7 +72,7 @@ export default [
     },
   }),
   Underline,
-  GlobalDragHandle,
+  //   GlobalDragHandle,
   Placeholder.configure({
     placeholder: ({ node }) => {
       if (node.type.name !== "drawio") {
@@ -88,9 +88,9 @@ export default [
     types: ["textStyle"],
   }),
   Mermaid,
-  slashCommand.configure({
-    suggestion,
-  }),
+  //   slashCommand.configure({
+  //     suggestion,
+  //   }),
   Table.configure({
     resizable: true,
     allowTableNodeSelection: true,

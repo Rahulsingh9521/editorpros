@@ -7,7 +7,7 @@
             theme: 'custom-theam',
             interactive: true,
             arrow: true,
-            hideOnclick: true,    
+            hideOnClick: true,    
         }"
         v-if="editor"
         :should-show="( {editor}) => {
@@ -31,10 +31,6 @@
 
           
     >
-
-    <div class="bubble-menu">
-        <button @click=""></button>
-    </div>
 
         <div class="bubble-menu">
 
@@ -61,7 +57,6 @@
 
 import { BubbleMenu } from '@tiptap/vue-3';
 import { formatUtils } from '../text-utils/textFormat';
-import { is } from 'core-js/core/object';
 
 export default {
     components: {
@@ -94,7 +89,7 @@ export default {
             }
 
             this.editor.chain().focus().run();
-            this.$store.commit('toggleShownLinkMenu', true);
+            this.$store.commit('toggleShowLinkMenu', true);
         },
         handleformat(command){
             formatUtils.formatText(command, this.editor);

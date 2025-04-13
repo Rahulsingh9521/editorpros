@@ -12,7 +12,7 @@
 
 import { NodeViewWrapper } from '@tiptap/vue-3';
 import mermaid from 'mermaid';
-import { mermaidTemplates } from './mermaidTemplates';
+import { mermaidTemplates } from './mermaidTemplate';
 
 
 export default{

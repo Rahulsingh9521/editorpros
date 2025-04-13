@@ -4,7 +4,7 @@
             :class="{ 'is-selected': index == selectedIndex }"
             v-for="(item,index) in items"
             :key="index"
-            @click="Selection(index)"
+            @click="selecteItem(index)"
         >
             {{ item.title }}
         </button>
@@ -49,7 +49,7 @@ export default {
             return false;
         },
         upHandler() {
-            this.selectedIndex = (this.selectedIndex - 1 + this.items.length) % this.items.length;
+            this.selectedIndex = ((this.selectedIndex + this.items.length) - 1) % this.items.length;
         },
         downHandler() {
             this.selectedIndex = (this.selectedIndex + 1) % this.items.length;
@@ -74,7 +74,7 @@ export default {
 </script>
 
 <style scoped>
-.bubble-menu {
+.dropdown-menu {
     background: #fff;
     border: 1px solid gray;
     width: 150px;
@@ -95,7 +95,7 @@ export default {
         text-align: left;
         width: 100%;
         font-size: 12px;
-        padding: 4px 10px;
+        padding: 5px 10px;
         border-radius: 5px;
 
         &.is-selected{
@@ -107,10 +107,6 @@ export default {
             color: #000;
         }
     }
-}
-
-.tippy-content{
-    padding: 8px 8px 8px 2px;
 }
 
 </style>

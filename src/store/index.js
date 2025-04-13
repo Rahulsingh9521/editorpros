@@ -1,6 +1,6 @@
-import Vuex from "vuex";
+import { createStore } from "vuex";
 
-const store = new Vuex.Store({
+export default createStore({
   state: {
     showLinkMenu: false,
     showBubbleMenu: false,
@@ -40,5 +40,3 @@ const store = new Vuex.Store({
     },
   },
 });
-
-export default store;

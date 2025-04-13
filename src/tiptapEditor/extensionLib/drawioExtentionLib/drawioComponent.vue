@@ -1,8 +1,25 @@
 <template>
     <NodeViewWrapper class="drawio-component">
         <div class="drawio-container">
-            <button v-if="!this.node.attrs.isCreated"></button>
+            <button v-if="!this.node.attrs.isCreated" & !this.isEditing calss="drawio-btn" @click="this.openDrawioIframe()">
+                Create Digram
+            </button>
 
+            <div v-if="this.node.attrs.isCreated & !this.isEditing">
+                <button class="drawio-btn edit-btn" @click="this.openDrawioIframe()">
+                    Edit Digram
+                </button>
+                <img :src="this.node.attrs.url" v-if="this.node.attrs.url" class="drawio-img"/>
+            </div>
+
+            <div v-if="this.isEditing" class="iframe-wrapper">
+                <iframe
+                    ref="drawioIframe"
+                    class="drawio-iframe"
+                    src="https://embaded.digram.net/?embed=1&libraries=1&ui=sketch&spin=1&modified=unsavedChanges&proto=json"
+                >
+                </iframe>
+            </div>
         </div>
     </NodeViewWrapper>
 </template>
