@@ -1,9 +1,9 @@
 <template>
     <div class="card bg-secondary text-white h-100">
         <div class="card-body">
-            <img src="/icon1.svg" alt="UI/UX" class="mb-3" />
-            <h5 class="card-title">UI/UX</h5>
-            <p class="card-text">Lorem ipsum dolor sit amet consectetur.</p>
+            <img :src="serviceImage" alt="serviceCardsImage" class="serviceImage" />
+            <h5 class="card-title">{{ this.title }}</h5>
+            <p class="card-text">{{this.description}}</p>
         </div>
     </div>
 </template>
@@ -11,7 +11,31 @@
 <script>
 export default {
     name: "ServiceCards",
-    data() {
+    props: {
+        title: {
+            type: String,
+            required: true,
+        },
+        description: {
+            type: String,
+            required: true,
+        },
+        icon: {
+            type: String,
+            required: true,
+        },
+    },
+    computed: {
+        serviceImage() {
+            return require(`@/assets/homePageassets/${this.icon}`);
+        },
+    },
+    // methods: {
+    //     serviceImage() {
+    //         return require(this.icon);
+    //     },
+    // },
+        data() {
         return {};
     },
     methods: {},
@@ -19,8 +43,8 @@ export default {
 </script>
 
 <style scoped>
-.service-cards {
-    padding: 20px;
-    text-align: center;
+.serviceImage {
+    height: 200px;
+    width: 100%;
 }
 </style>

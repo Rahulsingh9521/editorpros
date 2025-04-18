@@ -1,97 +1,48 @@
 <template>
     <div class="bg-dark text-white font-sans">
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 py-3">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <!-- <img src="" alt="Logo" height="30" class="me-2" /> -->
-        <img src="@/assets/homePageassets/rahul_image-min.png" alt="Icon" class="topIcon" />
-          <strong>Rahul Singh <span class="text-warning">Tanwar</span></strong>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#about">About Me</a></li>
-            <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-            <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-            <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
-            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          </ul>
-          <a class="btn btn-warning ms-3" href="#">Download CV</a>
-        </div>
-      </nav>
+      <topNavigation />
   
       <!-- Hero Section -->
-      <section class="container py-5 text-center text-md-start d-md-flex align-items-center justify-content-between">
+      <div class="container py-3 text-center text-md-start d-md-flex">
         <div class="col-md-6">
-          <p class="small">Hi I am</p>
-          <h1 class="display-5 fw-bold">Rahul Singh Tanwar <br /><span class="display-4">Full Stack Devloper</span></h1>
-          <p class="mt-3 text-muted">Lorem ipsum dolor sit amet consectetur. Tristique amet sed massa nibh lectus netus in.</p>
+          <h3 class="text-warning">Hi I am</h3>
+          <h1 class="display-5 fw-bold">Rahul Singh Tanwar <br /><span class="display-6">Software Engineer</span></h1>
+          <p class="mt-3">With experience in building scalable web applications and optimizing complex backend systems. Currently working at Samsung SDS, I specialize in <b class="text-warning">Full-stack development</b> using <b class="text-warning">Java (Spring Boot)</b> and modern JavaScript frameworks like <b class="text-warning">Vue.js and React.js</b>.
+            I’ve engineered secure RESTful APIs, implemented <b class="text-warning">real-time systems</b>, and designed custom CMS tools from scratch — including a ProseMirror-based rich text editor integrated with embedded diagramming via Draw.io.<br /><br />
+            I’m also skilled in <b class="text-warning">DevOps practices</b>, having worked with <b class="text-warning">Docker, Kubernetes, and CI/CD pipelines</b>, which helps me bridge the gap between development and deployment. My projects reflect my focus on performance, scalability, and user experience.
+          </p>
           <a href="#" class="btn btn-warning mt-4">Hire Me</a>
         </div>
-        <div class="">
+        <div class="col-md-6">
           <img src="@/assets/homePageassets/rahul_image3.png" alt="Profile" class="img-fluid" />
-        </div>
-      </section>
-  
-      <!-- About Section -->
-      <section id="about" class="container text-center py-5">
-        <h2 class="fw-bold mb-3">About Me</h2>
-        <p class="text-muted">Lorem ipsum dolor sit amet consectetur. Tristique amet sed massa nibh lectus netus in.</p>
-        <div class="mx-auto my-4" style="max-width: 500px;">
-          <progress-bar :progress="progress" />
-          <!-- <div class="mb-3">
-            <div class="d-flex justify-content-between">
-              <span>UX</span><span>90%</span>
-            </div>
-            <div class="progress">
-              <div class="progress-bar bg-warning" style="width: 90%"></div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="d-flex justify-content-between">
-              <span>UX</span><span>90%</span>
-            </div>
-            <div class="progress">
-              <div class="progress-bar bg-warning" style="width: 90%"></div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="d-flex justify-content-between">
-              <span>UX</span><span>90%</span>
-            </div>
-            <div class="progress">
-              <div class="progress-bar bg-warning" style="width: 90%"></div>
-            </div>
-          </div> -->
-        </div>
-      </section>
-  
-      <!-- Services Section -->
-
-      <service-carousel />
-  
-      <!-- Projects Section -->
-      <section id="projects" class="container text-center py-5">
-        <h2 class="fw-bold mb-4">My Projects</h2>
-        <div class="mb-4">
-          <button class="btn btn-outline-light me-2">All</button>
-          <button class="btn btn-outline-light">Web Design</button>
-        </div>
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="card text-dark">
-              <img src="/project1.png" class="card-img-top" alt="Project">
-              <div class="card-body">
-                <h5 class="card-title">Web Design</h5>
-                <p class="card-text">AirCalling Landing Page Design</p>
+            <div class="container d-flex justify-content-center">
+              <div class="row text-center">
+                <div class="col-4">
+                  <i class="bi bi-github" @click="handleSocialConnect('github')" style="font-size: 2rem;"></i>
+                </div>
+                <div class="col-4">
+                  <i class="bi bi-linkedin" @click="handleSocialConnect('linkedin')" style="font-size: 2rem;"></i>
+                </div>
+                <div class="col-4">
+                  <i class="bi bi-instagram" @click="handleSocialConnect('instagram')" style="font-size: 2rem;"></i>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- Repeat for other projects -->
         </div>
+      </div>
+  
+      <!-- About Section -->
+      <!-- <AboutMe /> -->
+  
+      <!-- Projects Section -->
+      <projectSection />
+
+      <!-- Services Section -->
+      <section id="services" class="container text-center py-1">
+        <h2 class="fw-bold mb-4">My Services</h2>
+        <p class="">Lorem ipsum dolor sit amet consectetur. Tristique amet sed massa nibh lectus netus in.</p>
+      <service-carousel />
       </section>
   
       <!-- Testimonials Section -->
@@ -129,25 +80,44 @@
           <i class="fab fa-instagram me-3"></i>
           <i class="fab fa-linkedin"></i>
         </div>
-        <p>© 2023 <span class="text-warning">FawziUIUX</span> All Rights Reserved., Inc.</p>
+        <p>© 2025 <span class="text-warning">Rahul singh Tanwar</span> All Rights Reserved., Inc.</p>
       </footer>
     </div>
   </template>
   
   <script>
 
-import progressBar from './components/progressBar.vue';
+// import AboutMe from './components/aboutMe.vue';
 import serviceCarousel from './components/serviceCarousel.vue';
+import topNavigation from './components/topNavigation.vue';
+import projectSection from './components/projectSection.vue';
+
   export default {
     name: 'PortfolioPage',
     components: {
-      progressBar,
       serviceCarousel,
+      topNavigation,
+      projectSection
+      // AboutMe
     },
     data() {
       return {
         progress: 50,
       };
+    },
+    methods: {
+      handleSocialConnect(openUrlof) {
+        if(openUrlof == 'github'){
+          window.open('https://github.com/Rahulsingh9521', '_blank');
+        }
+        else if(openUrlof == 'linkedin'){
+          window.open('https://www.linkedin.com/in/rahulsinghtanwar', '_blank');
+        }
+        else if(openUrlof == 'instagram'){
+          window.open('https://www.instagram.com/simpledevs.in/', '_blank');
+        }
+      },
+
     },
   };
   </script>
@@ -157,12 +127,6 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
-.topIcon {
-    position: absolute;
-    top: 0px;
-    left: 203px;
-    width: 70px;
-    height: 86px;
-}
+
 </style>
   
